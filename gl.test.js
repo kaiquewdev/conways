@@ -235,16 +235,18 @@ suite('Game of Life Suite of Tests', function () {
         suite('cells', function () {
             test('filter lines and cols', function () {
                 var grid = [ 1, 2, 3, 4, 5, 6 ];    
-                var result = [
-                    [ 
+                var result = {
+                    lines: [ 
                         [1, 2], 
                         [3, 4],
                         [5, 6]
-                    ], [ 
+                    ],
+
+                    cols: [ 
                         [1, 3, 5],
                         [2, 4, 6]
                     ]
-                ];
+                };
 
                 expect( 
                     gl.filter( grid, 2 ) 
@@ -252,17 +254,19 @@ suite('Game of Life Suite of Tests', function () {
             });
 
             test('filter return empty array in specific cases', function () {
+                var result = {};
+
                 expect(
                     gl.filter()
-                ).to.deep.equal([]);    
+                ).to.deep.equal( result );    
 
                 expect(
                     gl.filter( [], 0 )
-                ).to.deep.equal([]);
+                ).to.deep.equal( result );
 
                 expect(
                     gl.filter( [1, 2, 3], 4 )
-                ).to.deep.equal([]);
+                ).to.deep.equal( result );
             });
 
             test('first slot', function () {
@@ -280,6 +284,81 @@ suite('Game of Life Suite of Tests', function () {
                     gl.aroundCell( grid, 0, 2 )
                 ).to.deep.equal( result );
             });     
+
+            test('second slot', function () {
+                var grid = [
+                    0, 1, 2, 3 
+                ];    
+
+                var result = [
+                    grid[0],
+                    grid[2],
+                    grid[3]
+                ];
+
+                expect(
+                    gl.aroundCell( grid, 1, 2 )
+                ).to.deep.equal( result );
+            });
+
+            test('second slot', function () {
+                var grid = [
+                    0, 1, 2, 3 
+                ];    
+
+                var result = [
+                    grid[0],
+                    grid[1],
+                    grid[3]
+                ];
+
+                expect(
+                    gl.aroundCell( grid, 2, 2 )
+                ).to.deep.equal( result );
+            });
+
+            test('last slot', function () {
+                var grid = [
+                    0, 1, 2, 3
+                ];
+
+                var result = [
+                   grid[0], 
+                   grid[1],
+                   grid[2]
+                ];
+
+                expect(
+                    gl.aroundCell( grid, 3, 2 )
+                ).to.deep.equal( result );
+            });
+
+            test('center slot', function () {
+                var grid = [
+                    1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9
+                ];
+
+                var result = [
+                  grid[0], 
+                  grid[1],
+                  grid[2],
+                  grid[3],
+                  grid[5],
+                  grid[6],
+                  grid[7],
+                  grid[8],
+                ];
+
+                expect(
+                    gl.aroundCell( grid, 4, 3 )
+                ).to.deep.equal( result );
+            });
+
+            test('slot selection in a large grid', function () {
+                var grid = [];    
+            });
         });
     });
 });

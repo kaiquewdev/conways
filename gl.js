@@ -90,7 +90,7 @@ Gl.remainState = function ( neighbors, cell ) {
 };
 
 Gl.filter = function ( grid, lines ) {
-    var _grid = [];
+    var _grid = {};
 
     if ( ( grid && lines ) && lines <= grid.length ) {
         // Line manipulation
@@ -138,8 +138,28 @@ Gl.filter = function ( grid, lines ) {
             _colCounter += 1;
         }
 
-        _grid = [ _gridLines, _gridCols ];
+        _grid = { lines: _gridLines, cols: _gridCols };
     }
 
     return _grid;
+};
+
+Gl.aroundCell = function ( grid, index, lines ) {
+    var vodevil = require('vodevil');
+
+    var around = [],
+        _grid = Gl.filter( grid, lines );    
+
+    around = vodevil.intersect(
+        grid,
+        function ( slot, id ) {
+            if (
+                id !== index
+            ) {
+                return slot;    
+            } 
+        }
+    );
+
+    return around;
 };
