@@ -88,3 +88,58 @@ Gl.remainState = function ( neighbors, cell ) {
 
     return {};
 };
+
+Gl.filter = function ( grid, lines ) {
+    var _grid = [];
+
+    if ( ( grid && lines ) && lines <= grid.length ) {
+        // Line manipulation
+        var _lineCounter = 0,
+            _gridLines = [],
+            _lines = lines,
+            line = [];
+
+        // Get lines
+        for ( ;; ) { 
+            if ( _lineCounter === grid.length ) {
+                break;    
+            } else {
+                line.push( grid[ _lineCounter ] );    
+                _lines -= 1;
+
+                if ( _lines === 0 ) {
+                    _gridLines.push( line );
+                    _lines = lines;
+                    line = [];
+                }
+            }
+
+            _lineCounter += 1;
+        }
+
+        var _colCounter = 0,
+            _gridCols = [],
+            _cols = _gridLines.length,
+            col = [];
+
+        // Get cols
+        for ( ;; ) {
+            if ( _colCounter === _gridLines[0].length ) {
+                break;    
+            } else {
+                for ( var c = 0; c < _cols; c++ ) {
+                    col.push( _gridLines[ c ][ _colCounter ] );    
+                }
+
+                _gridCols.push( col );
+                col = [];
+            } 
+
+            _colCounter += 1;
+        }
+
+        _grid = [ _gridLines, _gridCols ];
+    }
+
+    return _grid;
+};

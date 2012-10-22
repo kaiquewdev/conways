@@ -232,8 +232,54 @@ suite('Game of Life Suite of Tests', function () {
     });    
 
     suite('Grid', function () {
-        suite('slots around of selected', function () {
-                
+        suite('cells', function () {
+            test('filter lines and cols', function () {
+                var grid = [ 1, 2, 3, 4, 5, 6 ];    
+                var result = [
+                    [ 
+                        [1, 2], 
+                        [3, 4],
+                        [5, 6]
+                    ], [ 
+                        [1, 3, 5],
+                        [2, 4, 6]
+                    ]
+                ];
+
+                expect( 
+                    gl.filter( grid, 2 ) 
+                ).to.deep.equal( result );
+            });
+
+            test('filter return empty array in specific cases', function () {
+                expect(
+                    gl.filter()
+                ).to.deep.equal([]);    
+
+                expect(
+                    gl.filter( [], 0 )
+                ).to.deep.equal([]);
+
+                expect(
+                    gl.filter( [1, 2, 3], 4 )
+                ).to.deep.equal([]);
+            });
+
+            test('first slot', function () {
+                var grid = [
+                    0, 1, 2, 3 
+                ];    
+
+                var result = [
+                    grid[1],
+                    grid[2],
+                    grid[3]
+                ];
+
+                expect(
+                    gl.aroundCell( grid, 0, 2 )
+                ).to.deep.equal( result );
+            });     
         });
     });
 });
