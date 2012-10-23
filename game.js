@@ -1,9 +1,10 @@
-var vodevil = require('vodevil'),
+var spawn = require('child_process').spawn,
+    vodevil = require('vodevil'),
     gl = require('./gl');
 
-var WIDE = 5,
+var WIDE = 10,
     SQUARE = 9632,
-    SPACES = '    ';
+    SPACES = '  ';
 
 var wide = WIDE,
     _grid = gl.grid( wide, wide ),
@@ -11,30 +12,66 @@ var wide = WIDE,
     board = grid['lines'],
     _board = grid['lines'];
 
-// Game methods
-var randomLiveCell = function () {
-    var line = Math.round( Math.random() * ( board.length - 1 ) ),
-        cell = Math.round( Math.random() * ( board[0].length - 1 ) );
+var drawImages = function () { 
+    _board[0][0]['live'] =
+    _board[0][1]['live'] =
+    _board[1][0]['live'] =
+    _board[1][1]['live'] =
 
-    board[ line ][ cell ]['live'] = true;
+    _board[3][0]['live'] =
+    _board[3][1]['live'] =
+    _board[4][0]['live'] =
+    _board[4][1]['live'] =
+
+    _board[9][9]['live'] =
+    _board[9][8]['live'] =
+    _board[9][7]['live'] =
+
+    _board[9][4]['live'] =
+    _board[9][3]['live'] =
+
+    _board[8][6]['live'] =
+    _board[7][4]['live'] =
+
+
+    true;
 };
-randomLiveCell();
 
-for ( var start = 0, end = 10; start <= end; start++ ) {
+var loop = function ( fn ) {
+    for ( ;; )
+        fn();
+};
+
+var main = function ( draw ) {
+    _grid = vodevil.intersect(
+        _board,
+        function ( line ) {
+            return vodevil.intersect(
+                line,
+                function ( cell ) {
+                    return cell;    
+                }
+            );
+        }
+    ); 
+
+    drawImages();
+
     _board = vodevil.intersect(
         _board,
         function ( line, lid ) {
             return vodevil.intersect(
                 line,
                 function ( cell, cid ) {
-                    var around = gl.aroundCell( 
-                        _grid, 
-                        [ lid, cid ], 
-                        wide 
-                    );    
+                    var around = [],
+                        _around = gl.aroundCell( 
+                            _grid, 
+                            [ lid, cid ], 
+                            wide 
+                        );    
 
                     around = vodevil.intersect(
-                        around,
+                        _around,
                         function ( line ) {
                             return vodevil.intersect(
                                 line,
@@ -43,15 +80,16 @@ for ( var start = 0, end = 10; start <= end; start++ ) {
                                 }
                           ); 
                         }
-                    );
+                    )[0][0];
 
-                    //Apply rules
-                    cell = gl.loneliness( around, cell );
-                    cell = gl.overpopulation( around, cell );
-                    cell = gl.neighborsAccurate( around, cell );
-                    
-                    if ( 'live' in gl.remainState( around, cell ) ) {
-                        cell = gl.remainState( around, cell );    
+                    if ( !draw ) {
+                        if ( cell['live'] ) {
+                            cell = gl.loneliness( around, cell );    
+                            cell = gl.overpopulation( around, cell );
+                            cell = gl.remainState( around, cell );    
+                        } else {
+                            cell = gl.neighborsAccurate( around, cell );    
+                        }
                     }
 
                     return cell;
@@ -68,7 +106,7 @@ for ( var start = 0, end = 10; start <= end; start++ ) {
                 line,
                 function ( cell ) {
                     if ( cell['live'] ) {
-                        return ' ' + String.fromCharCode( SQUARE ) + ' ';    
+                        return String.fromCharCode( SQUARE ) + ' ';    
                     } else {
                         return SPACES;    
                     }
@@ -98,4 +136,7 @@ for ( var start = 0, end = 10; start <= end; start++ ) {
             );    
         }
     );
-}
+};
+
+//main( true );
+loop( main );
