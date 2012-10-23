@@ -145,19 +145,44 @@ Gl.filter = function ( grid, lines ) {
 };
 
 Gl.aroundCell = function ( grid, index, lines ) {
-    var vodevil = require('vodevil');
-
     var around = [],
-        _grid = Gl.filter( grid, lines );    
+        _grid = Gl.filter( grid, lines );
+
+        // col sets
+    var _colsMin = ( index[1] - 1 ),
+        _colsMax = ( index[1] + 1 ),
+        // line sets 
+        _linesMin = ( index[0] - 1 ),
+        _linesMax = ( index[0] + 1 );
 
     around = vodevil.intersect(
-        grid,
-        function ( slot, id ) {
-            if (
-                id !== index
+        _grid['lines'],
+        function ( line, lid ) {
+            if ( 
+                lid >= _linesMin &&
+                lid <= _linesMax
             ) {
-                return slot;    
-            } 
+                var selection = vodevil.intersect(
+                    line,
+                    function ( col, cid ) {
+                        if (
+                            cid >= _colsMin &&
+                            cid <= _colsMax
+                        ) {
+                            if (
+                                !(
+                                    index[0] === lid &&
+                                    index[1] === cid
+                                )    
+                            ) {
+                                return col;    
+                            }
+                        } 
+                    }
+                );     
+
+                return selection;
+            }
         }
     );
 

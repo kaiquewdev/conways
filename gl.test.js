@@ -269,95 +269,113 @@ suite('Game of Life Suite of Tests', function () {
                 ).to.deep.equal( result );
             });
 
-            test('first slot', function () {
+            test('one house away from slot', function () {
                 var grid = [
-                    0, 1, 2, 3 
-                ];    
+                     1,  2,  3,  4,
+                     5,  6,  7,  8,
+                     9, 10, 11, 12,
+                    13, 14, 15, 16
+                ];
 
                 var result = [
-                    grid[1],
-                    grid[2],
-                    grid[3]
+                    [
+                        grid[0], 
+                        grid[1],
+                        grid[2],
+                    ],
+
+                    [
+                        grid[4],
+                        grid[6],
+                    ],
+
+                    [
+                        grid[8],
+                        grid[9],
+                        grid[10],
+                    ]
                 ];
 
                 expect(
-                    gl.aroundCell( grid, 0, 2 )
-                ).to.deep.equal( result );
-            });     
-
-            test('second slot', function () {
-                var grid = [
-                    0, 1, 2, 3 
-                ];    
-
-                var result = [
-                    grid[0],
-                    grid[2],
-                    grid[3]
-                ];
-
-                expect(
-                    gl.aroundCell( grid, 1, 2 )
-                ).to.deep.equal( result );
-            });
-
-            test('second slot', function () {
-                var grid = [
-                    0, 1, 2, 3 
-                ];    
-
-                var result = [
-                    grid[0],
-                    grid[1],
-                    grid[3]
-                ];
-
-                expect(
-                    gl.aroundCell( grid, 2, 2 )
+                    gl.aroundCell( grid, [1, 1], 4 )
                 ).to.deep.equal( result );
             });
 
-            test('last slot', function () {
+            test('one house away from slot', function () {
                 var grid = [
-                    0, 1, 2, 3
+                     1,  2,  3,  4,
+                     5,  6,  7,  8,
+                     9, 10, 11, 12,
+                    13, 14, 15, 16
                 ];
 
                 var result = [
-                   grid[0], 
-                   grid[1],
-                   grid[2]
+                    [
+                        grid[1], 
+                    ],
+
+                    [
+                        grid[4],
+                        grid[5],
+                    ]
                 ];
 
                 expect(
-                    gl.aroundCell( grid, 3, 2 )
+                    gl.aroundCell( grid, [0, 0], 4 )
                 ).to.deep.equal( result );
             });
 
-            test('center slot', function () {
+            test('house in the corner', function () {
                 var grid = [
-                    1, 2, 3,
-                    4, 5, 6,
-                    7, 8, 9
+                     1,  2,  3,  4,
+                     5,  6,  7,  8,
+                     9, 10, 11, 12,
+                    13, 14, 15, 16
                 ];
 
                 var result = [
-                  grid[0], 
-                  grid[1],
-                  grid[2],
-                  grid[3],
-                  grid[5],
-                  grid[6],
-                  grid[7],
-                  grid[8],
+                    [
+                        grid[10], 
+                        grid[11], 
+                    ],
+
+                    [
+                        grid[14],
+                    ]
                 ];
 
                 expect(
-                    gl.aroundCell( grid, 4, 3 )
+                    gl.aroundCell( grid, [3, 3], 4 )
                 ).to.deep.equal( result );
             });
 
-            test('slot selection in a large grid', function () {
-                var grid = [];    
+            test('house in the corner', function () {
+                var grid = [
+                     1,  2,  3,  4,
+                     5,  6,  7,  8,
+                     9, 10, 11, 12,
+                    13, 14, 15, 16
+                ];
+
+                var result = [
+                    [
+                        grid[2], 
+                        grid[3], 
+                    ],
+
+                    [
+                        grid[6],
+                    ],
+
+                    [
+                        grid[10],
+                        grid[11],
+                    ]
+                ];
+
+                expect(
+                    gl.aroundCell( grid, [1, 3], 4 )
+                ).to.deep.equal( result );
             });
         });
     });
