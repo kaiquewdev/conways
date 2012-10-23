@@ -13,25 +13,13 @@ var wide = WIDE,
     _board = grid['lines'];
 
 var drawImages = function () { 
-    _board[0][0]['live'] =
-    _board[0][1]['live'] =
-    _board[1][0]['live'] =
-    _board[1][1]['live'] =
+    _board[4][5]['live'] =
 
-    _board[3][0]['live'] =
-    _board[3][1]['live'] =
-    _board[4][0]['live'] =
-    _board[4][1]['live'] =
+    _board[5][4]['live'] =
+    _board[5][5]['live'] =
+    _board[5][6]['live'] =
 
-    _board[9][9]['live'] =
-    _board[9][8]['live'] =
-    _board[9][7]['live'] =
-
-    _board[9][4]['live'] =
-    _board[9][3]['live'] =
-
-    _board[8][6]['live'] =
-    _board[7][4]['live'] =
+    _board[6][6]['live'] =
 
 
     true;
@@ -42,9 +30,9 @@ var loop = function ( fn ) {
         fn();
 };
 
-var main = function ( draw ) {
-    _grid = vodevil.intersect(
-        _board,
+var readGrid = function ( grid, board ) {
+    return vodevil.intersect(
+        board,
         function ( line ) {
             return vodevil.intersect(
                 line,
@@ -53,19 +41,19 @@ var main = function ( draw ) {
                 }
             );
         }
-    ); 
+    );
+};
 
-    drawImages();
-
-    _board = vodevil.intersect(
-        _board,
+var updateBoard = function ( grid, board, draw ) {
+    return vodevil.intersect(
+        board,
         function ( line, lid ) {
             return vodevil.intersect(
                 line,
                 function ( cell, cid ) {
                     var around = [],
                         _around = gl.aroundCell( 
-                            _grid, 
+                            grid, 
                             [ lid, cid ], 
                             wide 
                         );    
@@ -83,24 +71,22 @@ var main = function ( draw ) {
                     )[0][0];
 
                     if ( !draw ) {
-                        if ( cell['live'] ) {
-                            cell = gl.loneliness( around, cell );    
-                            cell = gl.overpopulation( around, cell );
-                            cell = gl.remainState( around, cell );    
-                        } else {
-                            cell = gl.neighborsAccurate( around, cell );    
-                        }
+                        cell = gl.loneliness( around, cell );    
+                        cell = gl.overpopulation( around, cell );
+                        cell = gl.remainState( around, cell );    
+                        cell = gl.neighborsAccurate( around, cell );    
                     }
 
                     return cell;
                 }
             );
         }
-    );
+    );    
+};
 
-    // Change board chars
-    board = vodevil.intersect(
-        _board, 
+var readBoard = function ( board ) {
+    return vodevil.intersect(
+        board, 
         function ( line ) {
             return vodevil.intersect(
                 line,
@@ -114,28 +100,31 @@ var main = function ( draw ) {
             );
         }
     );
+};
 
+var putLines = function ( board ) {
     var lines = vodevil.intersect(
         board,
         function ( line ) {
             return line.join('');    
         }
-    );
+    ); 
 
     console.log( lines.join('\n') );
-    console.log( '\n' );
+};
 
-    _grid = vodevil.intersect(
-        _board,
-        function ( line ) {
-            return vodevil.intersect(
-                line,
-                function ( cell ) {
-                    return cell;    
-                }
-            );    
-        }
-    );
+var main = function ( draw ) {
+    drawImages();
+
+    _grid = readGrid( _grid, board ); 
+
+    _board = updateBoard( _grid, _board, draw );
+
+    // Change board chars
+    board = readBoard( board );
+
+    putLines( board );
+    console.log( '\n' );
 };
 
 //main( true );
